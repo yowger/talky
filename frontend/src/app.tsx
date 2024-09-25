@@ -12,7 +12,7 @@ export default function App() {
             children: AuthRoutes,
         },
         {
-            path: "/*",
+            path: "*",
             element: <NotFoundPage />,
         },
     ])
