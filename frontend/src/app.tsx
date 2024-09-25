@@ -1,10 +1,21 @@
-import { Button } from "@/components/ui/button"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
+
+import AuthRoutes from "./routes/paths/auth"
+
+import GuestRoute from "@/routes/components/GuestRoute"
+import NotFoundPage from "@/features/misc/not-found/page"
 
 export default function App() {
-    return (
-        <h1 className="text-3xl font-bold underline">
-            <Button>Nice</Button>
-            Hello world!
-        </h1>
-    )
+    const router = createBrowserRouter([
+        {
+            element: <GuestRoute />,
+            children: AuthRoutes,
+        },
+        {
+            path: "/*",
+            element: <NotFoundPage />,
+        },
+    ])
+
+    return <RouterProvider router={router} />
 }
