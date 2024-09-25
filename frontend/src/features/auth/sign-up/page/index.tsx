@@ -1,3 +1,7 @@
+import { AuthPaths } from "@/routes/constants/paths"
+
+import { SignUp } from "@clerk/clerk-react"
+
 export default function SignUpPage() {
-    return <div>Sign up</div>
+    return <SignUp path={AuthPaths.REGISTER} />
 }

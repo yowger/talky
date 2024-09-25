@@ -1,15 +1,24 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
 import AuthRoutes from "./routes/paths/auth"
+import ChatRoutes from "@/routes/paths/chat"
 
-import GuestRoute from "@/routes/components/GuestRoute"
+import ProtectedLayout from "@/routes/layouts/Protected"
+import RootLayout from "@/routes/layouts/Root"
+
 import NotFoundPage from "@/features/misc/not-found/page"
 
 export default function App() {
     const router = createBrowserRouter([
         {
-            element: <GuestRoute />,
-            children: AuthRoutes,
+            element: <RootLayout />,
+            children: [
+                ...AuthRoutes,
+                {
+                    element: <ProtectedLayout />,
+                    children: [...ChatRoutes],
+                },
+            ],
         },
         {
             path: "*",
