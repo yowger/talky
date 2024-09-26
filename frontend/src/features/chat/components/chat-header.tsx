@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function ChatHeader() {
     return (
-        <div className="p-2">
+        <div className="py-2 px-3">
             <div className="shrink-0 group block">
                 <div className="flex items-center">
                     <div className="relative inline-block">

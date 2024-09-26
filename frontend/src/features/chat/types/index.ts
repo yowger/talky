@@ -9,3 +9,9 @@ export interface Message {
     sender: User
     timestamp: Date
 }
+
+export interface Chat {
+    id: string
+    participants: User[]
+    latestMessage: Message
+}

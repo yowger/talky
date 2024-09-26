@@ -1,8 +1,4 @@
-// import { UserButton, useUser } from "@clerk/clerk-react"
-import { FileImage, Image, Send, SendHorizonal } from "lucide-react"
-import { cn } from "@/lib/utils"
-
-import { useState } from "react"
+// import { useState } from "react"
 
 import MessageInput from "../components/message-input"
 import ChatHeader from "../components/chat-header"
@@ -10,25 +6,22 @@ import ChatSidebar from "../components/chat-sidebar"
 import MessageList from "../components/message-list"
 import { Message } from "../types"
 
-// import { useMediaQuery } from "@/hooks/use-media-query"
-
 export default function ChatPage() {
-    // const { user } = useUser()
-    const [isSidebarOpen, setSidebarOpen] = useState(false)
+    // const [isSidebarOpen, setSidebarOpen] = useState(false)
 
-    const toggleSidebar = () => {
-        setSidebarOpen((prevState) => !prevState)
-    }
+    // const toggleSidebar = () => {
+    //     setSidebarOpen((prevState) => !prevState)
+    // }
 
     return (
         <div className="w-full flex h-svh max-h-svh">
-            <div className="hidden h-full flex-[0.3] md:block border-r-2 bg-white">
+            <div className="hidden h-full md:flex-[0.4] lg:flex-[0.3] md:block border-r bg-white">
                 <ChatSidebar />
             </div>
 
             <div className="flex h-full flex-1 flex-col">
                 <div className="flex h-full flex-col justify-between overflow-y-auto">
-                    <div className="sticky top-0 w-full border-b-2 bg-white z-10">
+                    <div className="sticky top-0 w-full border-b bg-white z-10">
                         <ChatHeader />
                     </div>
 
@@ -36,7 +29,7 @@ export default function ChatPage() {
                         <MessageList messages={messages} />
                     </div>
 
-                    <div className="w-full sticky bottom-0 border-t-2 bg-white z-10">
+                    <div className="w-full sticky bottom-0 border-t bg-white z-10">
                         <MessageInput />
                     </div>
                 </div>

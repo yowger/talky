@@ -13,10 +13,10 @@ function formatMessageTimestamp(date: Date): string {
     }
 
     if (isThisWeek(date)) {
-        return format(date, "EEEE, HH:mm")
+        return format(date, "EEEE, hh:mm a")
     }
 
-    return format(date, "MMM, dd yyyy HH:mm")
+    return format(date, "MMM, dd yyyy hh:mm a")
 }
 
 export default function MessageBubble(props: MessageBubbleProps) {
@@ -36,7 +36,7 @@ export default function MessageBubble(props: MessageBubbleProps) {
                     <span className="text-sm font-semibold text-gray-900 dark:text-white">
                         {message.sender.name}
                     </span>
-                    <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    <span className="text-xs font-normal text-gray-500 dark:text-gray-400">
                         {formattedTimestamp}
                     </span>
                 </div>
