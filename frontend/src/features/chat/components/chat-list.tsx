@@ -1,6 +1,8 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import type { Chat } from "../types"
 import { formatDistanceToNow } from "date-fns"
+
+import AvatarWithStatus from "@/components/common/avatar-with-status"
+
+import type { Chat } from "../types"
 
 interface ChatListProps {
     chats: Chat[]
@@ -21,23 +23,10 @@ export default function ChatList(props: ChatListProps) {
                         key={chat.id}
                         className="flex items-start p-2 border-b border-gray-200 dark:border-gray-700"
                     >
-                        <Avatar>
-                            {chat.participants.length > 0 && (
-                                <>
-                                    <AvatarImage
-                                        src={
-                                            chat.participants[0].avatar ||
-                                            "https://github.com/shadcn.png"
-                                        }
-                                    />
-                                    <AvatarFallback>
-                                        {chat.participants[0].name
-                                            .slice(0, 2)
-                                            .toUpperCase()}
-                                    </AvatarFallback>
-                                </>
-                            )}
-                        </Avatar>
+                        <AvatarWithStatus
+                            src={chat.participants[0].avatar}
+                            name={chat.participants[0].name}
+                        />
                         <div className="flex flex-col w-full ml-2">
                             <div className="flex items-center justify-between">
                                 <span className="text-sm font-semibold text-gray-900 dark:text-white">
@@ -63,3 +52,5 @@ export default function ChatList(props: ChatListProps) {
 function formatChatTimestamp(date: Date): string {
     return formatDistanceToNow(date)
 }
+
+// todo chat logic for group and single members
