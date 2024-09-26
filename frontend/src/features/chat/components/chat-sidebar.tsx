@@ -23,23 +23,27 @@ const chats: Chat[] = [
     {
         id: "1",
         participants: [
-            { name: "Alice", avatar: "https://example.com/alice.jpg" },
-            { name: "Bob" },
+            { id: "1", name: "Alice", avatar: "https://example.com/alice.jpg" },
+            { id: "2", name: "Bob" },
         ],
         latestMessage: {
             id: "m1",
             content: "Hey there!",
-            sender: { name: "Alice", avatar: "https://example.com/alice.jpg" },
+            sender: {
+                id: "1",
+                name: "Alice",
+                avatar: "https://example.com/alice.jpg",
+            },
             timestamp: new Date(),
         },
     },
     {
         id: "2",
-        participants: [{ name: "Roger" }],
+        participants: [{ id: "1", name: "Roger" }],
         latestMessage: {
             id: "m2",
             content: "See you tomorrow!",
-            sender: { name: "Roger" },
+            sender: { id: "1", name: "Roger" },
             timestamp: new Date(new Date().setDate(new Date().getDate() - 3)), // 3 days ago
         },
     },
