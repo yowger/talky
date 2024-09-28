@@ -13,7 +13,7 @@ const envSchema = z.object({
                     (origin) => z.string().url().safeParse(origin).success
                 ),
             {
-                message: "Each origin must be a valid URL",
+                message: "ALLOWED_ORIGINS origin must be a valid URL",
             }
         ),
     // DATABASE_URL: z
@@ -36,4 +36,6 @@ const envSchema = z.object({
         .default(3000),
 })
 
-export default envSchema.parse(process.env)
+const env = envSchema.parse(process.env)
+
+export default env
