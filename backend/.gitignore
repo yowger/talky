@@ -26,3 +26,7 @@ notes.txt
 
 # test coverage
 coverage/
+
+# Environment varibales
+.env*
+!.env*.example
