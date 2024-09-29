@@ -5,6 +5,7 @@ npm-debug.log
 # Environment variables file (if using dotenv or similar)
 .env
 .env.test
+!.env.example
 
 # Build output
 dist/
