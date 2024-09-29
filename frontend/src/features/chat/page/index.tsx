@@ -5,13 +5,37 @@ import ChatHeader from "../components/chat-header"
 import ChatSidebar from "../components/chat-sidebar"
 import MessageList from "../components/message-list"
 import { Message } from "../types"
+import { useEffect, useState } from "react"
+import pusher from "@/config/pusher"
 
 export default function ChatPage() {
+    const [inputValue, setInputValue] = useState("")
     // const [isSidebarOpen, setSidebarOpen] = useState(false)
 
     // const toggleSidebar = () => {
     //     setSidebarOpen((prevState) => !prevState)
     // }
+
+    function handleOnChangeInput(input: string) {
+        setInputValue(input)
+    }
+
+    function handleSendMessage() {
+        console.log("🚀 ~ handleSendMessage ~ inputValue:", inputValue)
+    }
+
+    useEffect(() => {
+        const channel = pusher.subscribe("chat")
+
+        channel.bind("new-message", (data: string) => {
+            console.log("🚀 ~ channel.bind ~ data:", data)
+        })
+
+        return () => {
+            channel.unbind_all()
+            channel.unsubscribe()
+        }
+    }, [])
 
     return (
         <div className="w-full flex h-svh max-h-svh">
@@ -30,7 +54,10 @@ export default function ChatPage() {
                     </div>
 
                     <div className="w-full sticky bottom-0 border-t bg-white z-10">
-                        <MessageInput />
+                        <MessageInput
+                            onChange={handleOnChangeInput}
+                            onSendClick={handleSendMessage}
+                        />
                     </div>
                 </div>
             </div>
