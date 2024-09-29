@@ -1,7 +1,7 @@
 import { Outlet, useNavigate } from "react-router-dom"
 import { ClerkProvider } from "@clerk/clerk-react"
 
-import { env } from "@/config/env"
+import { config } from "@/config/config"
 
 import { AuthPaths } from "@/routes/constants/paths"
 
@@ -10,7 +10,7 @@ export default function RootLayout() {
 
     return (
         <ClerkProvider
-            publishableKey={env.CLERK_PUBLISHABLE_KEY}
+            publishableKey={config.clerk.publishableKey}
             afterSignOutUrl={AuthPaths.LOGIN}
             routerPush={(to) => navigate(to)}
             routerReplace={(to) => navigate(to, { replace: true })}
