@@ -7,5 +7,5 @@ export function sendMessageHandler(req: Request, res: Response) {
 
     broadcastMessage(message)
 
-    res.status(200)
+    return res.status(200).json({})
 }
