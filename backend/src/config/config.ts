@@ -34,8 +34,26 @@ const envSchema = z.object({
         .positive()
         .max(65535, { message: "PORT must be between 1 and 65535" })
         .default(3000),
+    PUSHER_APP_ID: z.string().min(1, { message: "PUSHER_APP_ID is required" }),
+    PUSHER_KEY: z.string().min(1, { message: "PUSHER_KEY is required" }),
+    PUSHER_SECRET: z.string().min(1, { message: "PUSHER_SECRET is required" }),
+    PUSHER_CLUSTER: z
+        .string()
+        .min(1, { message: "PUSHER_CLUSTER is required" }),
 })
 
 const env = envSchema.parse(process.env)
 
-export default env
+export const config = {
+    nodeEnv: env.NODE_ENV,
+    port: env.PORT,
+    cors: {
+        allowedOrigins: env.ALLOWED_ORIGINS,
+    },
+    pusher: {
+        appId: env.PUSHER_APP_ID,
+        key: env.PUSHER_KEY,
+        secret: env.PUSHER_SECRET,
+        cluster: env.PUSHER_CLUSTER,
+    },
+}

@@ -1,14 +1,16 @@
 import cookieParser from "cookie-parser"
 import compression from "compression"
 import cors from "cors"
+import helmet from "helmet"
 import express from "express"
 
 import createCorsOptions from "@/config/cors"
-import env from "@/config/env"
+import { config } from "@/config/config"
 
 const app = express()
 
-app.use(cors(createCorsOptions(env.ALLOWED_ORIGINS)))
+app.use(helmet())
+app.use(cors(createCorsOptions(config.cors.allowedOrigins)))
 app.use(cookieParser())
 app.use(express.json({ limit: "5mb" }))
 app.use(
