@@ -3,7 +3,8 @@ node_modules/
 npm-debug.log
 
 # Environment variables file (if using dotenv or similar)
-config/*.env
+.env
+.env.test
 
 # Build output
 dist/
@@ -20,13 +21,3 @@ logs/
 # OS or temporary files
 .DS_Store
 Thumbs.db
-
-# my notes
-notes.txt
-
-# test coverage
-coverage/
-
-# Environment varibales
-.env*
-!.env*.example
