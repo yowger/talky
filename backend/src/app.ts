@@ -7,6 +7,8 @@ import express from "express"
 import createCorsOptions from "@/config/cors"
 import { config } from "@/config/config"
 
+import routes from "@/routes/v1"
+
 const app = express()
 
 app.use(helmet())
@@ -17,5 +19,7 @@ app.use(
     express.urlencoded({ limit: "5mb", extended: true, parameterLimit: 50000 })
 )
 app.use(compression())
+
+app.use("/v1", routes)
 
 export default app
