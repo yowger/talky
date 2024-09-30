@@ -4,8 +4,8 @@ import { config } from "@/config/config"
 
 const { key, cluster } = config.pusher
 
-const pusher = new Pusher(key, {
+const pusherClient = new Pusher(key, {
     cluster,
 })
 
-export default pusher
+export default pusherClient

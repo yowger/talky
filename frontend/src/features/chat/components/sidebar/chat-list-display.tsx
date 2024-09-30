@@ -1,21 +1,30 @@
-import { Button } from "@/components/ui/button"
 import { UserPlus } from "lucide-react"
-import { Chat } from "../types"
-import ChatList from "./chat-list"
 
-export default function ChatSidebar() {
+import { Button } from "@/components/ui/button"
+import ChatList from "../chat-body/chat-list"
+import SidebarBody from "./sidebar-body"
+import SidebarHeader from "./sidebar-header"
+import SidebarTitle from "./sidebar-title"
+
+import type { Chat } from "../../types"
+
+export default function ChatListDisplay() {
     return (
-        <div className="h-full">
-            <div className="flex items-center justify-between py-2 px-3">
-                <h1 className="text-xl font-bold tracking-wide">Messages</h1>
+        <SidebarBody>
+            <SidebarHeader>
+                <SidebarTitle>Messages</SidebarTitle>
 
-                <Button variant="outline" size="icon" className="rounded-full">
+                <Button
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full text-gray-500"
+                >
                     <UserPlus className="h-4 w-4" />
                 </Button>
-            </div>
+            </SidebarHeader>
 
             <ChatList chats={chats} />
-        </div>
+        </SidebarBody>
     )
 }
 

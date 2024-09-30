@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
 
 import AvatarWithStatus from "@/components/common/avatar-with-status"
 
-import type { Message } from "../types"
+import type { Message } from "../../types"
 
 interface MessageBubbleProps {
     message: Message

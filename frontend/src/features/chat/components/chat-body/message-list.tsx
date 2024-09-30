@@ -1,6 +1,6 @@
 import MessageBubble from "./message-bubble"
 
-import type { Message } from "../types"
+import type { Message } from "../../types"
 
 interface MessageListProps {
     messages: Message[]
