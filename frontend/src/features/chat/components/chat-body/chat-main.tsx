@@ -32,17 +32,9 @@ export default function ChatMain() {
 
     return (
         <div className="flex flex-1 h-full flex-col justify-between overflow-y-auto">
-            <div className="sticky top-0 w-full border-b bg-white z-10">
-                <ChatHeader />
-            </div>
-
-            <div className="p-4 flex-1">
-                <MessageList messages={messages} />
-            </div>
-
-            <div className="w-full sticky bottom-0 border-t bg-white z-10">
-                <MessageInput onSendClick={handleSendMessage} />
-            </div>
+            <ChatHeader />
+            <MessageList messages={messages} />
+            <MessageInput onSendClick={handleSendMessage} />
         </div>
     )
 }

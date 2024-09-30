@@ -7,8 +7,8 @@ import NavPanel from "./nav-panel"
 
 import type { PanelItem } from "./nav-panel"
 
-const ChatListDisplay = lazy(() => import("./chat-list-display"))
-const PeopleListDisplay = lazy(() => import("./people-list-display"))
+const ChatListDisplay = lazy(() => import("./chat/chat-list-display"))
+const PeopleListDisplay = lazy(() => import("./people/people-list-display"))
 
 export type PanelType = "chat" | "people" | "logout"
 

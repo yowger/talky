@@ -43,30 +43,32 @@ export default function MessageInput(props: MessageInputProps) {
     }
 
     return (
-        <div className="flex gap-2 items-center p-4">
-            <form onSubmit={handleSubmit} className="flex flex-1 gap-2">
-                <Button type="button" variant="outline" size="icon">
-                    <FileImage className="h-4 w-4" />
-                </Button>
+        <div className="w-full sticky bottom-0 border-t bg-white z-10">
+            <div className="flex gap-2 items-center p-4">
+                <form onSubmit={handleSubmit} className="flex flex-1 gap-2">
+                    <Button type="button" variant="outline" size="icon">
+                        <FileImage className="h-4 w-4" />
+                    </Button>
 
-                <TextareaAutosize
-                    className="resize-none block p-2 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300"
-                    maxRows={3}
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder={placeholder}
-                />
+                    <TextareaAutosize
+                        className="resize-none block p-2 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300"
+                        maxRows={3}
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onKeyDown={handleKeyDown}
+                        placeholder={placeholder}
+                    />
 
-                <Button
-                    type="submit"
-                    variant="outline"
-                    size="icon"
-                    disabled={!inputValue.trim()}
-                >
-                    <SendHorizonal className="h-4 w-4" />
-                </Button>
-            </form>
+                    <Button
+                        type="submit"
+                        variant="outline"
+                        size="icon"
+                        disabled={!inputValue.trim()}
+                    >
+                        <SendHorizonal className="h-4 w-4" />
+                    </Button>
+                </form>
+            </div>
         </div>
     )
 }

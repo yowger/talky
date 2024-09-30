@@ -1,12 +1,12 @@
 import { UserPlus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import ChatList from "../chat-body/chat-list"
-import SidebarBody from "./sidebar-body"
-import SidebarHeader from "./sidebar-header"
-import SidebarTitle from "./sidebar-title"
+import ChatList from "./chat-list"
+import SidebarBody from "../sidebar-body"
+import SidebarHeader from "../sidebar-header"
+import SidebarTitle from "../sidebar-title"
 
-import type { Chat } from "../../types"
+import type { Chat } from "../../../types"
 
 export default function ChatListDisplay() {
     return (

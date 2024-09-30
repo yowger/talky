@@ -12,7 +12,7 @@ export default function MessageList(props: MessageListProps) {
     const userId = "2"
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="p-4 flex flex-1 flex-col gap-6">
             {messages.map((message, index) => (
                 <MessageBubble
                     key={index}

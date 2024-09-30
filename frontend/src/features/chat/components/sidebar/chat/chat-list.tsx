@@ -2,7 +2,7 @@ import { formatDistanceToNow } from "date-fns"
 
 import AvatarWithStatus from "@/components/common/avatar-with-status"
 
-import type { Chat } from "../../types"
+import type { Chat } from "../../../types"
 
 interface ChatListProps {
     chats: Chat[]
@@ -23,7 +23,7 @@ export default function ChatList(props: ChatListProps) {
                 )
 
                 return (
-                    <div key={chat.id} className="flex items-start p-2 ">
+                    <div key={chat.id} className="flex items-start p-2">
                         <AvatarWithStatus
                             src={chat.participants[0].avatar}
                             name={chat.participants[0].name}
