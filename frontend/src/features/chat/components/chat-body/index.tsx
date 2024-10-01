@@ -1,8 +1,6 @@
-import { useEffect } from "react"
+import { useSendMessage } from "@/features/chat/api/use-send-message"
 
-import pusherClient from "@/config/pusher"
-
-import { useSendMessage } from "@/features/api/useSendMessage"
+import usePusherNewMessage from "../../hooks/use-pusher-new-message"
 
 import ChatHeader from "./chat-header"
 import MessageList from "./message-list"
@@ -17,18 +15,11 @@ export default function ChatMain() {
         mutate(value)
     }
 
-    useEffect(() => {
-        const channel = pusherClient.subscribe("chat")
+    function handleNewMessage(newMessage: Message) {
+        console.log("🚀 ~ handleNewMessage ~ newMessage:", newMessage)
+    }
 
-        channel.bind("new-message", (data: string) => {
-            console.log("🚀 ~ channel.bind ~ data:", data)
-        })
-
-        return () => {
-            channel.unbind_all()
-            channel.unsubscribe()
-        }
-    }, [])
+    usePusherNewMessage({ onNewMessage: handleNewMessage })
 
     return (
         <div className="flex flex-1 h-full flex-col justify-between overflow-y-auto">
