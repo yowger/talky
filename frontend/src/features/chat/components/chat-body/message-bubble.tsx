@@ -42,11 +42,11 @@ export default function MessageBubble(props: MessageBubbleProps) {
                 />
                 <div className="flex flex-col gap-1 w-full">
                     <MessageContent
-                        isCurrentUser={isCurrentUser}
+                        isReverse={isCurrentUser}
                         content={message.content}
                     />
                     <MessageHeader
-                        isCurrentUser={isCurrentUser}
+                        isReverse={isCurrentUser}
                         senderName={message.sender.name}
                         date={formattedTimestamp}
                     />
@@ -57,21 +57,17 @@ export default function MessageBubble(props: MessageBubbleProps) {
 }
 
 interface MessageHeaderProps {
-    isCurrentUser: boolean
+    isReverse: boolean
     senderName: string
     date: string
 }
 
-function MessageHeader({
-    isCurrentUser,
-    senderName,
-    date,
-}: MessageHeaderProps) {
+function MessageHeader({ isReverse, senderName, date }: MessageHeaderProps) {
     return (
         <div
             className={cn(
                 "flex items-center gap-2",
-                isCurrentUser ? "flex-row-reverse" : ""
+                isReverse ? "flex-row-reverse" : ""
             )}
         >
             <span className="text-xs text-gray-500 dark:text-white">
@@ -86,16 +82,16 @@ function MessageHeader({
 }
 
 interface MessageContentProps {
-    isCurrentUser: boolean
+    isReverse: boolean
     content: string
 }
 
-function MessageContent({ isCurrentUser, content }: MessageContentProps) {
+function MessageContent({ isReverse, content }: MessageContentProps) {
     return (
         <div
             className={cn(
                 "flex flex-col leading-1.5 p-4 border-gray-200",
-                isCurrentUser
+                isReverse
                     ? "rounded-s-xl rounded-ee-xl bg-blue-500"
                     : "rounded-e-xl rounded-es-xl bg-gray-100 dark:bg-gray-700"
             )}
@@ -103,9 +99,7 @@ function MessageContent({ isCurrentUser, content }: MessageContentProps) {
             <p
                 className={cn(
                     "text-sm font-normal",
-                    isCurrentUser
-                        ? "text-white"
-                        : "text-gray-900 dark:text-white"
+                    isReverse ? "text-white" : "text-gray-900 dark:text-white"
                 )}
             >
                 {content}

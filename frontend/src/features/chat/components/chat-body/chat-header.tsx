@@ -13,9 +13,15 @@ export default function ChatHeader() {
     return (
         <div className="py-2 px-3 h-14 sticky top-0 w-full border-b bg-white z-10">
             <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="text-gray-500">
-                    <ChevronLeft className="w-5 h-5" />
-                </Button>
+                <div className="md:hidden block ">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-gray-500"
+                    >
+                        <ChevronLeft className="w-5 h-5" />
+                    </Button>
+                </div>
 
                 <AvatarWithStatus {...user} />
 

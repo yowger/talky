@@ -3,12 +3,12 @@ import { LogOut, MessageSquare, Users } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+import ChatListDisplay from "./chat"
 import NavPanel from "./nav-panel"
 
 import type { PanelItem } from "./nav-panel"
 
-const ChatListDisplay = lazy(() => import("./chat/chat-list-display"))
-const PeopleListDisplay = lazy(() => import("./people/people-list-display"))
+const PeopleListDisplay = lazy(() => import("./people"))
 
 export type PanelType = "chat" | "people" | "logout"
 
@@ -39,7 +39,7 @@ export default function ChatSidebar() {
     return (
         <div
             className={cn(
-                "hidden h-full flex-1 md:flex-[0.5] lg:flex-[0.3] md:block border-r bg-white",
+                "hidden h-full w-full fixed md:relative flex-1 md:flex-[0.5] lg:flex-[0.3] md:block border-r bg-white z-20",
                 isSidebarOpen ? "flex" : ""
             )}
         >
