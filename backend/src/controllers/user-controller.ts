@@ -2,6 +2,9 @@ import clerkClient from "@/config/clerk"
 
 import { validateUsersQuery } from "@/validation/user/user-schema"
 
+import { getUsers } from "@/service/user-service"
+
+import type { PaginationOptions } from "@/types/pagination-types"
 import type { Request, Response } from "express"
 
 export async function getUsersByPaginationHandler(req: Request, res: Response) {
@@ -9,20 +12,23 @@ export async function getUsersByPaginationHandler(req: Request, res: Response) {
 
     const offset = (page - 1) * pageSize
 
-    const paginationOptions = {
+    const paginationOptions: PaginationOptions = {
         limit: pageSize,
         offset,
     }
 
-    const { data, totalCount } = await clerkClient.users.getUserList({
-        username,
-        ...paginationOptions,
-    })
+    const { users, totalCount } = await getUsers(username, paginationOptions)
+
+    const formattedUsers = users.map((user) => ({
+        id: user.id,
+        username: user.username,
+        profileImageUrl: user.imageUrl,
+    }))
 
     const totalPages = Math.ceil(totalCount / pageSize)
 
     return res.status(200).json({
-        users: data,
+        users: formattedUsers,
         totalCount,
         pagination: {
             page,
@@ -32,3 +38,5 @@ export async function getUsersByPaginationHandler(req: Request, res: Response) {
         },
     })
 }
+
+// might cached with redis in future probably.. ?
