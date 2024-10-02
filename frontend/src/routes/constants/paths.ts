@@ -1,5 +1,6 @@
 export const AuthPaths = {
     LOGIN: "/login",
+    SSO_CALLBACK: "//login/sso-callback",
     REGISTER: "/register",
 }
 
