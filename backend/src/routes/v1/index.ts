@@ -1,13 +1,23 @@
 import { Router } from "express"
 
 import chatRoute from "@/routes/v1/chat-route"
+import userRoute from "@/routes/v1/users-route"
 
 const router = Router()
 
-const defaultRoutes = [
+interface Routes {
+    path: string
+    route: Router
+}
+
+const defaultRoutes: Routes[] = [
     {
         path: "/chat",
         route: chatRoute,
+    },
+    {
+        path: "/user",
+        route: userRoute,
     },
 ]
 
