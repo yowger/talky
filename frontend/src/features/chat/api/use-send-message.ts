@@ -1,16 +1,19 @@
 import { useMutation } from "@tanstack/react-query"
 
-import axiosClient from "@/config/axios"
+import useAxiosAuth from "@/hooks/use-axios-auth"
 
-export function sendMessage(message: string) {
+import type { AxiosInstance } from "axios"
+
+export function sendMessage(axiosClient: AxiosInstance, message: string) {
     return axiosClient.post("/chat/messages", { message })
 }
 
 export function useSendMessage() {
+    const axiosAuth = useAxiosAuth()
+
     return useMutation({
-        onSuccess: (data) => {
-            console.log("🚀 ~ useLogin ~ data:", data)
+        mutationFn: (message: string) => {
+            return sendMessage(axiosAuth, message)
         },
-        mutationFn: sendMessage,
     })
 }

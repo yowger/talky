@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query"
 
 import useAxiosAuth from "@/hooks/use-axios-auth"
 
-import type { Pagination, User } from "../types"
 import type { AxiosInstance } from "axios"
+import type { Pagination, User } from "../types"
 
 export interface UsersResponse {
     users: User[]

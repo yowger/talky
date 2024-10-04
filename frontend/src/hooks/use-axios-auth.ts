@@ -25,6 +25,7 @@ export default function useAxiosAuth() {
                 return Promise.reject(error)
             }
         )
+
         return () => {
             axiosClient.interceptors.request.eject(requestInterceptor)
         }
