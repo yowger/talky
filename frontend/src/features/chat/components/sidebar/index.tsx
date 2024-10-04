@@ -4,26 +4,30 @@ import { LogOut, MessageSquare, Users } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+import AvatarWithStatus from "@/components/common/avatar-with-status"
+import { Button } from "@/components/ui/button"
 import ChatListDisplay from "./chat"
 import NavPanel from "./nav-panel"
 
-import type { PanelItem } from "./nav-panel"
+import PanelItemButton from "./panel-item-button"
+
+import type { ReactNode } from "react"
 
 const PeopleListDisplay = lazy(() => import("./people"))
 
-export type PanelType = "chat" | "people" | "logout"
+type PanelType = "chat" | "people" | "logout"
+type PanelItem = {
+    label: string
+    icon: ReactNode
+    isActive?: boolean
+    onClick?: () => void
+}
 
 export default function ChatSidebar() {
     const isSidebarOpen = true
 
     const [selectedPanel, setSelectedPanel] = useState<PanelType>("chat")
     const { signOut } = useClerk()
-
-    function handleLogOut() {
-        setSelectedPanel("logout")
-
-        signOut()
-    }
 
     const panelItems: PanelItem[] = [
         {
@@ -42,7 +46,10 @@ export default function ChatSidebar() {
             label: "Logout",
             icon: <LogOut className="h-4 w-4" />,
             isActive: selectedPanel === "logout",
-            onClick: handleLogOut,
+            onClick: () => {
+                setSelectedPanel("logout")
+                signOut()
+            },
         },
     ]
 
@@ -54,7 +61,24 @@ export default function ChatSidebar() {
             )}
         >
             <div className="flex flex-col-reverse md:flex-row h-full flex-1">
-                <NavPanel items={panelItems} />
+                <NavPanel>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full flex-1 md:flex-none"
+                    >
+                        <AvatarWithStatus name="Clerk" />
+                    </Button>
+
+                    {panelItems.map((item, index) => (
+                        <PanelItemButton
+                            key={index}
+                            icon={item.icon}
+                            isActive={item.isActive}
+                            onClick={item.onClick}
+                        />
+                    ))}
+                </NavPanel>
 
                 <Suspense fallback={<div>Loading...</div>}>
                     {selectedPanel === "chat" && <ChatListDisplay />}

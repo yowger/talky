@@ -1,7 +1,7 @@
 export interface User {
-    id: string
-    name: string
-    avatar?: string
+    id: number
+    username: string
+    profileImageUrl: string
 }
 
 export interface Message {
@@ -15,4 +15,11 @@ export interface Chat {
     id: string
     participants: User[]
     latestMessage: Message
+}
+
+export interface Pagination {
+    page: number
+    pageSize: number
+    totalCount: number
+    totalPages: number
 }
