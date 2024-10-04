@@ -4,16 +4,23 @@ import useAxiosAuth from "@/hooks/use-axios-auth"
 
 import type { AxiosInstance } from "axios"
 
-export function sendMessage(axiosClient: AxiosInstance, message: string) {
-    return axiosClient.post("/chat/messages", { message })
+interface MessagePayload {
+    content: string
+    timestamp: Date
 }
 
+export function sendMessage(
+    axiosClient: AxiosInstance,
+    payload: MessagePayload
+) {
+    return axiosClient.post("/chat/messages", payload)
+}
 export function useSendMessage() {
     const axiosAuth = useAxiosAuth()
 
     return useMutation({
-        mutationFn: (message: string) => {
-            return sendMessage(axiosAuth, message)
+        mutationFn: (payload: MessagePayload) => {
+            return sendMessage(axiosAuth, payload)
         },
     })
 }

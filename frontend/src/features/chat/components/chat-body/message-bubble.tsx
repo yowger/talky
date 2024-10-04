@@ -37,8 +37,8 @@ export default function MessageBubble(props: MessageBubbleProps) {
                 )}
             >
                 <AvatarWithStatus
-                    src={message.sender.avatar}
-                    name={message.sender.name}
+                    src={message.sender.imageUrl}
+                    name={message.sender.username}
                 />
                 <div className="flex flex-col gap-1 w-full">
                     <MessageContent
@@ -47,7 +47,7 @@ export default function MessageBubble(props: MessageBubbleProps) {
                     />
                     <MessageHeader
                         isReverse={isCurrentUser}
-                        senderName={message.sender.name}
+                        senderName={message.sender.username}
                         date={formattedTimestamp}
                     />
                 </div>

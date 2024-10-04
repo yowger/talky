@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "@clerk/clerk-sdk-node": "^5.0.46",
+        "@paralleldrive/cuid2": "^2.2.2",
         "compression": "^1.7.4",
         "cookie-parser": "^1.4.6",
         "cors": "^2.8.5",

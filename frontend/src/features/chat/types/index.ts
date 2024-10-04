@@ -1,7 +1,7 @@
 export interface User {
-    id: number
+    id: string
     username: string
-    profileImageUrl: string
+    imageUrl: string
 }
 
 export interface Message {

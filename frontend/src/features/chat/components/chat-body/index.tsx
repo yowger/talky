@@ -1,3 +1,6 @@
+import { useUser } from "@clerk/clerk-react"
+import { useState } from "react"
+
 import { useSendMessage } from "@/features/chat/api/use-send-message"
 
 import usePusherNewMessage from "../../hooks/use-pusher-new-message"
@@ -9,35 +12,52 @@ import MessageInput from "./message-input"
 import type { Message } from "../../types"
 
 export default function ChatMain() {
+    const { user, isLoaded } = useUser()
+    console.log("🚀 ~ ChatMain ~ user:", user?.id)
     const { mutate } = useSendMessage()
 
-    function handleSendMessage(value: string) {
-        mutate(value)
+    const [messages, setMessages] = useState<Message[]>(fakeMessages)
+
+    function handleSendMessage(content: string) {
+        mutate({
+            content,
+            timestamp: new Date(),
+        })
     }
 
     function handleNewMessage(newMessage: Message) {
         console.log("🚀 ~ handleNewMessage ~ newMessage:", newMessage)
+        setMessages((prevMessages) => [...prevMessages, newMessage])
     }
 
     usePusherNewMessage({ onNewMessage: handleNewMessage })
 
-    return (
-        <div className="flex flex-1 h-full flex-col justify-between overflow-y-auto">
-            <ChatHeader />
-            <MessageList messages={messages} />
-            <MessageInput onSendClick={handleSendMessage} />
-        </div>
-    )
+    if (!isLoaded) {
+        return "loading"
+    }
+
+    if (user) {
+        return (
+            <div className="flex flex-1 h-full flex-col justify-between overflow-y-auto">
+                <ChatHeader />
+                <MessageList
+                    messages={messages}
+                    currentUserId={user?.id || ""}
+                />
+                <MessageInput onSendClick={handleSendMessage} />
+            </div>
+        )
+    }
 }
 
-const messages: Message[] = [
+const fakeMessages: Message[] = [
     {
         id: "1",
         content: "Hey!",
         sender: {
             id: "1",
-            name: "Alice",
-            avatar: "https://randomuser.me/api/portraits/women/1.jpg",
+            username: "Alice",
+            imageUrl: "https://randomuser.me/api/portraits/women/1.jpg",
         },
         timestamp: new Date("2023-09-24T14:12:00"),
     },
@@ -46,8 +66,8 @@ const messages: Message[] = [
         content: "How's everything going? 😊",
         sender: {
             id: "2",
-            name: "Bob",
-            avatar: "https://randomuser.me/api/portraits/men/2.jpg",
+            username: "Bob",
+            imageUrl: "https://randomuser.me/api/portraits/men/2.jpg",
         },
         timestamp: new Date("2023-09-24T14:15:00"),
     },
@@ -57,8 +77,8 @@ const messages: Message[] = [
             "I just finished that project we were discussing. It took longer than expected, but I'm happy with the results.",
         sender: {
             id: "3",
-            name: "Charlie",
-            avatar: "https://randomuser.me/api/portraits/men/3.jpg",
+            username: "Charlie",
+            imageUrl: "https://randomuser.me/api/portraits/men/3.jpg",
         },
         timestamp: new Date("2023-09-24T14:20:00"),
     },
@@ -67,8 +87,8 @@ const messages: Message[] = [
         content: "Sounds great! We should review it together later.",
         sender: {
             id: "1",
-            name: "Alice",
-            avatar: "https://randomuser.me/api/portraits/women/1.jpg",
+            username: "Alice",
+            imageUrl: "https://randomuser.me/api/portraits/women/1.jpg",
         },
         timestamp: new Date("2023-09-24T14:25:00"),
     },
@@ -77,8 +97,8 @@ const messages: Message[] = [
         content: "Sure, I'm free after 5 PM.",
         sender: {
             id: "2",
-            name: "Bob",
-            avatar: "https://randomuser.me/api/portraits/men/2.jpg",
+            username: "Bob",
+            imageUrl: "https://randomuser.me/api/portraits/men/2.jpg",
         },
         timestamp: new Date("2023-09-24T14:28:00"),
     },
@@ -88,8 +108,8 @@ const messages: Message[] = [
             "Here's the document you requested earlier. Let me know if you need any changes.",
         sender: {
             id: "3",
-            name: "Charlie",
-            avatar: "https://randomuser.me/api/portraits/men/3.jpg",
+            username: "Charlie",
+            imageUrl: "https://randomuser.me/api/portraits/men/3.jpg",
         },
         timestamp: new Date("2023-09-23T10:05:00"),
     },
@@ -98,8 +118,8 @@ const messages: Message[] = [
         content: "Thanks, I'll check it out and get back to you soon.",
         sender: {
             id: "1",
-            name: "Alice",
-            avatar: "https://randomuser.me/api/portraits/women/1.jpg",
+            username: "Alice",
+            imageUrl: "https://randomuser.me/api/portraits/women/1.jpg",
         },
         timestamp: new Date("2023-09-23T10:15:00"),
     },
@@ -108,8 +128,8 @@ const messages: Message[] = [
         content: "By the way, did you see the latest news? It's wild!",
         sender: {
             id: "2",
-            name: "Bob",
-            avatar: "https://randomuser.me/api/portraits/men/2.jpg",
+            username: "Bob",
+            imageUrl: "https://randomuser.me/api/portraits/men/2.jpg",
         },
         timestamp: new Date("2023-09-22T16:45:00"),
     },
@@ -118,8 +138,8 @@ const messages: Message[] = [
         content: "No, what happened?",
         sender: {
             id: "3",
-            name: "Charlie",
-            avatar: "https://randomuser.me/api/portraits/men/3.jpg",
+            username: "Charlie",
+            imageUrl: "https://randomuser.me/api/portraits/men/3.jpg",
         },
         timestamp: new Date("2023-09-22T16:50:00"),
     },
@@ -129,8 +149,8 @@ const messages: Message[] = [
             "There was a huge announcement from the company. They're launching a new product next month.",
         sender: {
             id: "2",
-            name: "Bob",
-            avatar: "https://randomuser.me/api/portraits/men/2.jpg",
+            username: "Bob",
+            imageUrl: "https://randomuser.me/api/portraits/men/2.jpg",
         },
         timestamp: new Date("2023-09-22T16:55:00"),
     },
@@ -139,8 +159,8 @@ const messages: Message[] = [
         content: "Nice, I've been waiting for that!",
         sender: {
             id: "1",
-            name: "Alice",
-            avatar: "https://randomuser.me/api/portraits/women/1.jpg",
+            username: "Alice",
+            imageUrl: "https://randomuser.me/api/portraits/women/1.jpg",
         },
         timestamp: new Date("2023-09-22T17:00:00"),
     },
@@ -150,8 +170,8 @@ const messages: Message[] = [
             "Check out this link: https://www.example.com. It's got some great info about the product.",
         sender: {
             id: "3",
-            name: "Charlie",
-            avatar: "https://randomuser.me/api/portraits/men/3.jpg",
+            username: "Charlie",
+            imageUrl: "https://randomuser.me/api/portraits/men/3.jpg",
         },
         timestamp: new Date("2023-09-21T14:32:00"),
     },
@@ -160,8 +180,8 @@ const messages: Message[] = [
         content: "Thanks, Charlie! This will be super helpful.",
         sender: {
             id: "2",
-            name: "Bob",
-            avatar: "https://randomuser.me/api/portraits/men/2.jpg",
+            username: "Bob",
+            imageUrl: "https://randomuser.me/api/portraits/men/2.jpg",
         },
         timestamp: new Date("2023-09-21T15:00:00"),
     },
@@ -170,8 +190,8 @@ const messages: Message[] = [
         content: "Anyone up for a coffee later?",
         sender: {
             id: "1",
-            name: "Alice",
-            avatar: "https://randomuser.me/api/portraits/women/1.jpg",
+            username: "Alice",
+            imageUrl: "https://randomuser.me/api/portraits/women/1.jpg",
         },
         timestamp: new Date("2023-09-20T09:10:00"),
     },
@@ -180,8 +200,8 @@ const messages: Message[] = [
         content: "I'm in, what time are you thinking?",
         sender: {
             id: "2",
-            name: "Bob",
-            avatar: "https://randomuser.me/api/portraits/men/2.jpg",
+            username: "Bob",
+            imageUrl: "https://randomuser.me/api/portraits/men/2.jpg",
         },
         timestamp: new Date(),
     },
