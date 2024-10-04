@@ -1,8 +1,8 @@
-import { Request, Response } from "express"
-
 import { broadcastMessage } from "@/events/chat-events"
 
-export function sendMessageHandler(req: Request, res: Response) {
+import type { Request, Response } from "express"
+
+export async function sendMessageHandler(req: Request, res: Response) {
     const { message } = req.body
 
     broadcastMessage(message)

@@ -7,6 +7,9 @@ import express from "express"
 import createCorsOptions from "@/config/cors"
 import { config } from "@/config/config"
 
+import invalidPathHandler from "@/middlewares/invalid-path-handler"
+import globalErrorHandler from "@/middlewares/global-error-handler"
+
 import routes from "@/routes/v1"
 
 const app = express()
@@ -21,5 +24,8 @@ app.use(
 app.use(compression())
 
 app.use("/v1", routes)
+
+app.use(invalidPathHandler)
+app.use(globalErrorHandler)
 
 export default app

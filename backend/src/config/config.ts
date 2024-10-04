@@ -37,6 +37,9 @@ const envSchema = z.object({
     CLERK_SECRET_KEY: z
         .string()
         .min(1, { message: "CLERK_SECRET_KEY is required" }),
+    CLERK_PUBLISHABLE_KEY: z
+        .string()
+        .min(1, { message: "CLERK_PUBLISHABLE_KEY is required" }),
     PUSHER_APP_ID: z.string().min(1, { message: "PUSHER_APP_ID is required" }),
     PUSHER_KEY: z.string().min(1, { message: "PUSHER_KEY is required" }),
     PUSHER_SECRET: z.string().min(1, { message: "PUSHER_SECRET is required" }),
@@ -55,6 +58,7 @@ export const config = {
     },
     clerk: {
         secretKey: env.CLERK_SECRET_KEY,
+        publishableKey: env.CLERK_PUBLISHABLE_KEY,
     },
     pusher: {
         appId: env.PUSHER_APP_ID,

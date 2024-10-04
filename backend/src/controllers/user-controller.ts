@@ -1,5 +1,3 @@
-import clerkClient from "@/config/clerk"
-
 import { validateUsersQuery } from "@/validation/user/user-schema"
 
 import { getUsers } from "@/service/user-service"
@@ -9,7 +7,7 @@ import type { Request, Response } from "express"
 
 export async function getUsersByPaginationHandler(req: Request, res: Response) {
     const { username, page, pageSize } = validateUsersQuery(req.query)
-
+    console.log("nice")
     const offset = (page - 1) * pageSize
 
     const paginationOptions: PaginationOptions = {
