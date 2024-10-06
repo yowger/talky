@@ -50,24 +50,26 @@ function unexpectedErrorHandler(error: Error) {
 process.on("uncaughtException", unexpectedErrorHandler)
 process.on("unhandledRejection", unexpectedErrorHandler)
 
-function gracefulExitHandler(signal: string) {
-    return () => {
-        logger.info(`Received ${signal} signal`)
+function exitHandler() {
+    if (server) {
+        server.close(async () => {
+            logger.info("Server closed")
 
-        if (server) {
-            server.close(async () => {
-                logger.info("Server closed")
+            await mongoose.connection.close()
+            logger.info("MongoDB connection closed")
 
-                await mongoose.connection.close()
-                logger.info("MongoDB connection closed")
-
-                process.exit(0)
-            })
-        } else {
             process.exit(0)
-        }
+        })
+    } else {
+        process.exit(0)
     }
 }
 
-process.on("SIGTERM", gracefulExitHandler("SIGTERM"))
-process.on("SIGINT", gracefulExitHandler("SIGTERM"))
+function gracefulExitHandler(signal: string) {
+    logger.info(`Received ${signal} signal`)
+
+    exitHandler()
+}
+
+process.on("SIGTERM", () => gracefulExitHandler("SIGTERM"))
+process.on("SIGINT", () => gracefulExitHandler("SIGTERM"))
