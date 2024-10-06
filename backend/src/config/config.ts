@@ -16,11 +16,11 @@ const envSchema = z.object({
                 message: "ALLOWED_ORIGINS origin must be a valid URL",
             }
         ),
-    // DATABASE_URL: z
-    //     .string({
-    //         required_error: "DATABASE_URL is required",
-    //     })
-    //     .url({ message: "DATABASE_URL must be a valid URL" }),
+    MONGODB_URL: z
+        .string({
+            required_error: "MONGODB_URL is required",
+        })
+        .url({ message: "MONGODB_URL must be a valid URL" }),
     NODE_ENV: z
         .enum(["development", "test", "production"], {
             errorMap: () => ({
@@ -52,6 +52,9 @@ const env = envSchema.parse(process.env)
 
 export const config = {
     nodeEnv: env.NODE_ENV,
+    mongoose: {
+        url: env.MONGODB_URL,
+    },
     port: env.PORT,
     cors: {
         allowedOrigins: env.ALLOWED_ORIGINS,
