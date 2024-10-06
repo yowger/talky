@@ -1,19 +1,26 @@
 import pino from "pino"
 import { config } from "./config"
 
-const level = config.nodeEnv === "development" ? "debug" : "info"
+const isDevelopment = config.nodeEnv === "development"
 
-const logger = pino({
-    transport: {
-        level,
-        target: "pino/file",
-        options: {
-            colorize: true,
-            destination: "./logs/app.log",
-            mkdir: true,
-        },
-    },
-})
+const level = isDevelopment ? "debug" : "info"
+
+const transport = isDevelopment
+    ? {
+          target: "pino-pretty",
+          options: {
+              colorize: true,
+          },
+      }
+    : {
+          target: "pino/file",
+          options: {
+              destination: "./logs/app.log",
+              mkdir: true,
+          },
+      }
+
+const logger = pino({ level, transport })
 
 export default logger
 
