@@ -35,7 +35,6 @@
         "module-alias": "^2.2.3",
         "pino": "^9.4.0",
         "pino-http": "^10.3.0",
-        "pino-pretty": "^11.2.2",
         "pusher": "^5.2.0",
         "zod": "^3.23.8"
     },
