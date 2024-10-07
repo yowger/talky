@@ -34,5 +34,5 @@ export async function sendMessageHandler(
 
     broadcastMessage(message)
 
-    return res.status(200)
+    return res.status(200).send({})
 }

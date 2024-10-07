@@ -7,12 +7,14 @@ const level = isDevelopment ? "debug" : "info"
 
 const transport = isDevelopment
     ? {
+          level,
           target: "pino-pretty",
           options: {
               colorize: true,
           },
       }
     : {
+          level,
           target: "pino/file",
           options: {
               destination: "./logs/app.log",
@@ -20,7 +22,7 @@ const transport = isDevelopment
           },
       }
 
-const logger = pino({ level, transport })
+const logger = pino({ transport })
 
 export default logger
 
