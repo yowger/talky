@@ -4,7 +4,7 @@ import { NotFoundError } from "@/handler/api-errors"
 
 import { broadcastMessage } from "@/events/chat-events"
 
-import { getUser } from "@/service/user-service"
+import { getClerkUser } from "@/service/clerk-service"
 
 import type { MessagePayload } from "@/events/chat-events"
 import type { RequireAuthProp } from "@clerk/clerk-sdk-node"
@@ -17,7 +17,7 @@ export async function sendMessageHandler(
     const { auth } = req
     const { content, timestamp } = req.body
 
-    const user = await getUser(auth.userId)
+    const user = await getClerkUser(auth.userId)
 
     if (!user) {
         throw new NotFoundError("User not found")

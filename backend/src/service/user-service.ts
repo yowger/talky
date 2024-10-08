@@ -1,20 +1,40 @@
-import clerkClient from "@/config/clerk"
+import { FilterQuery } from "mongoose"
 
-import type { PaginationOptions } from "@/types/pagination-types"
-import type { User } from "@clerk/clerk-sdk-node"
+import { UserModel } from "@/models/user-model"
 
-export async function getUser(userId: string): Promise<User> {
-    return await clerkClient.users.getUser(userId)
+import type { UserDocument } from "@/models/user-model"
+import type { User } from "@/types/user-types"
+
+export async function createUser(userData: User): Promise<UserDocument> {
+    const user = new UserModel(userData)
+    return await user.save()
 }
 
-export async function getUsers(
-    username?: string[],
-    paginationOptions?: PaginationOptions
-) {
-    const { data, totalCount } = await clerkClient.users.getUserList({
-        username,
-        ...paginationOptions,
-    })
+export async function findUserByClerkId(
+    clerkId: string
+): Promise<UserDocument | null> {
+    return await UserModel.findOne({ clerkId })
+}
 
-    return { users: data, totalCount }
+export async function findUsers(
+    filter: FilterQuery<User>
+): Promise<UserDocument[]> {
+    return await UserModel.find(filter)
+}
+
+export async function deleteUser(
+    clerkId: string
+): Promise<UserDocument | null> {
+    return await UserModel.findOneAndDelete({ clerkId })
+}
+
+export async function updateUserStatus(
+    clerkId: string,
+    status: User["status"]
+): Promise<UserDocument | null> {
+    return await UserModel.findOneAndUpdate(
+        { clerkId },
+        { status },
+        { new: true }
+    )
 }

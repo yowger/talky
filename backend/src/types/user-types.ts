@@ -1,4 +1,11 @@
+export enum UserStatus {
+    ONLINE = "online",
+    OFFLINE = "offline",
+}
+
 export interface User {
     clerkId: string
-    status: "online" | "offline"
+    username: string
+    imageUrl: string
+    status: UserStatus
 }

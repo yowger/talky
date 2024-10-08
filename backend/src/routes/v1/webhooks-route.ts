@@ -1,16 +1,21 @@
 import { Router } from "express"
-import { Webhook } from "svix"
 
-import { config } from "@/config/config"
 import logger from "@/config/logger"
+
+import webhook from "@/config/webhook"
+
+import type {
+    SessionJSON,
+    UserJSON,
+    DeletedObjectJSON,
+    WebhookEvent,
+} from "@clerk/clerk-sdk-node"
 
 const router = Router()
 
 router.post("/api/webhooks", async (req, res) => {
-    console.log("WEBHOOKS")
     const headers = req.headers
-    const payload = req.body
-    console.log("🚀 ~ router.post ~ payload:", payload)
+    const payload = req.body as WebhookEvent
 
     const svix_id = headers["svix-id"] as string
     const svix_timestamp = headers["svix-timestamp"] as string
@@ -22,16 +27,16 @@ router.post("/api/webhooks", async (req, res) => {
         })
     }
 
-    const webhook = new Webhook(config.clerk.webhookSecret)
+    // const webhook = new Webhook(config.clerk.webhookSecret)
 
-    let evt: any
+    let evt: WebhookEvent
 
     try {
         evt = webhook.verify(JSON.stringify(payload), {
             "svix-id": svix_id,
             "svix-timestamp": svix_timestamp,
             "svix-signature": svix_signature,
-        })
+        }) as WebhookEvent
     } catch (err) {
         logger.error(`Error verifying webhook: ${err.message}`)
 
@@ -40,12 +45,33 @@ router.post("/api/webhooks", async (req, res) => {
             message: err.message,
         })
     }
+    console.log("🚀 ~ router.post ~ evt:", evt)
 
-    // const { id } = evt.data
-    // const eventType = evt.type
+    const { id } = evt.data
+    const eventType = evt.type
 
-    // console.log(`Webhook with an ID of ${id} and type of ${eventType}`)
-    // console.log("Webhook body:", evt.data)
+    console.log(`Webhook with an ID of ${id} and type of ${eventType}`)
+    console.log("Webhook body:", evt.data)
+
+    switch (eventType) {
+        case "user.created": {
+            break
+        }
+        case "user.updated": {
+            break
+        }
+        case "user.deleted": {
+            break
+        }
+        case "session.created": {
+            break
+        }
+        case "session.ended":
+        case "session.removed":
+        case "session.revoked": {
+            break
+        }
+    }
 
     return res.status(200).json({
         message: "Webhook received",
