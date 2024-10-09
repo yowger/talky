@@ -13,7 +13,7 @@ interface Routes {
 
 const defaultRoutes: Routes[] = [
     {
-        path: "/",
+        path: "/api/webhooks",
         route: webhookRoute,
     },
     {

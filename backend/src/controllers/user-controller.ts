@@ -1,42 +1,27 @@
-import { validateUsersQuery } from "@/validation/user/user-schema"
+import { findUsersWithPagination } from "@/service/user-service"
 
-import { getClerkUsers } from "@/service/clerk-service"
-
-import type { PaginationOptions } from "@/types/pagination-types"
 import type { Request, Response } from "express"
+import type { UsersQuery } from "@/validation/user/user-schema"
 
-export async function getUsersByPaginationHandler(req: Request, res: Response) {
-    const { username, page, pageSize } = validateUsersQuery(req.query)
-    console.log("nice")
-    const offset = (page - 1) * pageSize
+type ExtendedRequest = Request<{}, {}, {}, UsersQuery>
 
-    const paginationOptions: PaginationOptions = {
-        limit: pageSize,
-        offset,
-    }
+export async function getUsersByPaginationHandler(
+    req: ExtendedRequest,
+    res: Response
+) {
+    const { username, page, pageSize } = req.query
 
-    const { users, totalCount } = await getClerkUsers(
-        username,
-        paginationOptions
-    )
-
-    const formattedUsers = users.map((user) => ({
-        id: user.id,
-        username: user.username,
-        profileImageUrl: user.imageUrl,
-    }))
-
-    const totalPages = Math.ceil(totalCount / pageSize)
-
-    return res.status(200).json({
-        users: formattedUsers,
-        totalCount,
-        pagination: {
+    const { users, pagination } = await findUsersWithPagination(
+        { username },
+        {
             page,
             pageSize,
-            totalCount,
-            totalPages,
-        },
+        }
+    )
+
+    return res.status(200).json({
+        users,
+        pagination,
     })
 }
 

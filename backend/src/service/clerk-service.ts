@@ -11,9 +11,15 @@ export async function getClerkUsers(
     username?: string[],
     paginationOptions?: PaginationOptions
 ) {
+    const { page, pageSize } = paginationOptions
+
+    const limit = pageSize
+    const offset = (page - 1) * pageSize
+
     const { data, totalCount } = await clerkClient.users.getUserList({
         username,
-        ...paginationOptions,
+        limit,
+        offset,
     })
 
     return { users: data, totalCount }
