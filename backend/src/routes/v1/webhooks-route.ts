@@ -1,15 +1,24 @@
 import { Router } from "express"
 
 import logger from "@/config/logger"
-
 import webhook from "@/config/webhook"
 
-import type {
-    SessionJSON,
-    UserJSON,
-    DeletedObjectJSON,
-    WebhookEvent,
-} from "@clerk/clerk-sdk-node"
+import {
+    BadRequestError,
+    ConflictError,
+    NotFoundError,
+} from "@/handler/api-errors"
+
+import {
+    createUser,
+    deleteUser,
+    updateUser,
+    updateUserStatus,
+} from "@/service/user-service"
+
+import { UserStatus } from "@/types/user-types"
+
+import type { WebhookEvent } from "@clerk/clerk-sdk-node"
 
 const router = Router()
 
@@ -17,60 +26,136 @@ router.post("/api/webhooks", async (req, res) => {
     const headers = req.headers
     const payload = req.body as WebhookEvent
 
-    const svix_id = headers["svix-id"] as string
-    const svix_timestamp = headers["svix-timestamp"] as string
-    const svix_signature = headers["svix-signature"] as string
+    const svixId = headers["svix-id"] as string
+    const svixTimestamp = headers["svix-timestamp"] as string
+    const svixSignature = headers["svix-signature"] as string
 
-    if (!svix_id || !svix_timestamp || !svix_signature) {
-        return new Response("Error occured -- no svix headers", {
-            status: 400,
-        })
+    if (!svixId || !svixTimestamp || !svixSignature) {
+        throw new BadRequestError("No svix headers")
     }
-
-    // const webhook = new Webhook(config.clerk.webhookSecret)
 
     let evt: WebhookEvent
 
     try {
         evt = webhook.verify(JSON.stringify(payload), {
-            "svix-id": svix_id,
-            "svix-timestamp": svix_timestamp,
-            "svix-signature": svix_signature,
+            "svix-id": svixId,
+            "svix-timestamp": svixTimestamp,
+            "svix-signature": svixSignature,
         }) as WebhookEvent
     } catch (err) {
-        logger.error(`Error verifying webhook: ${err.message}`)
+        logger.error(
+            {
+                error: {
+                    message: err.message,
+                    stack: err.stack,
+                },
+                webhook: {
+                    payload,
+                    svix: {
+                        id: svixId,
+                        timestamp: svixTimestamp,
+                    },
+                },
+            },
+            `Error verifying webhook for id: ${svixId}`
+        )
 
-        return res.status(400).json({
-            success: false,
-            message: err.message,
-        })
+        throw new BadRequestError("Failed to verify webhook")
     }
-    console.log("🚀 ~ router.post ~ evt:", evt)
 
-    const { id } = evt.data
     const eventType = evt.type
 
-    console.log(`Webhook with an ID of ${id} and type of ${eventType}`)
     console.log("Webhook body:", evt.data)
 
     switch (eventType) {
         case "user.created": {
+            const { id, username, image_url } = evt.data
+
+            try {
+                await createUser({
+                    clerkId: id,
+                    username,
+                    imageUrl: image_url,
+                })
+            } catch (error) {
+                throw new ConflictError(
+                    "Failed to create user. User already exists"
+                )
+            }
+
             break
         }
         case "user.updated": {
+            const { id, username, image_url } = evt.data
+
+            const updatedUser = await updateUser(id, {
+                username,
+                imageUrl: image_url,
+            })
+
+            if (!updatedUser) {
+                throw new NotFoundError("Failed to update user.User not found")
+            }
+
             break
         }
         case "user.deleted": {
+            const { id } = evt.data
+
+            const deletedUser = await deleteUser(id)
+
+            if (!deletedUser) {
+                throw new NotFoundError("Failed to delete user. User not found")
+            }
+
             break
         }
         case "session.created": {
+            const { id } = evt.data
+
+            const updatedUserSession = await updateUserStatus(
+                id,
+                UserStatus.ONLINE
+            )
+
+            if (!updatedUserSession) {
+                throw new NotFoundError(
+                    "Failed to update user session. User not found"
+                )
+            }
+
             break
         }
         case "session.ended":
         case "session.removed":
         case "session.revoked": {
+            const { id } = evt.data
+
+            const updatedUserSession = await updateUserStatus(
+                id,
+                UserStatus.OFFLINE
+            )
+
+            if (!updatedUserSession) {
+                throw new NotFoundError(
+                    "Failed to update user session. User not found"
+                )
+            }
+
             break
         }
+        default:
+            logger.warn(
+                {
+                    webhook: {
+                        event: eventType,
+                        payload: evt.data,
+                    },
+                },
+                `Webhook event type not supported: ${eventType} received`
+            )
+
+            break
     }
 
     return res.status(200).json({

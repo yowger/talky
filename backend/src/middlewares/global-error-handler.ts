@@ -1,4 +1,4 @@
-import { BaseError } from "@/handler/api-errors"
+import { ApiError } from "@/handler/api-errors"
 
 import type { NextFunction, Request, Response } from "express"
 
@@ -8,7 +8,7 @@ export default function globalErrorHandler(
     res: Response,
     next: NextFunction
 ) {
-    if (error instanceof BaseError) {
+    if (error instanceof ApiError) {
         return res.status(error.httpStatusCode).json({ message: error.message })
     }
 
