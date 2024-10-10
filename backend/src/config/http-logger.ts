@@ -7,6 +7,7 @@ import logger from "@/config/logger"
 import { isWebhookHeaders } from "@/utils/webhook-utils"
 
 import type { Request, Response } from "express"
+import type { WebhookEvent, SessionWebhookEvent } from "@clerk/clerk-sdk-node"
 
 const httpLogger = httpPino({
     logger,
@@ -42,24 +43,46 @@ const httpLogger = httpPino({
 
 export default httpLogger
 
-function getWebhookDetails(req: Request) {
+type ExtendedRequest = Request<{}, {}, WebhookEvent>
+
+function getWebhookDetails(req: ExtendedRequest) {
     const payload = req.body
 
     if (payload) {
         const { "svix-id": svixId, "svix-timestamp": svixTimestamp } =
             req.headers
-        const userId = payload?.data?.user_id || "unknown"
-        const eventType = payload?.type || "unknown"
+        const eventType = payload.type
 
-        return {
-            details: {
-                userId,
-                webhook: {
-                    id: svixId,
-                    type: eventType,
-                    timestamp: svixTimestamp,
-                },
+        const webhookDetails = {
+            webhook: {
+                id: svixId,
+                type: eventType,
+                timestamp: svixTimestamp,
             },
+        }
+        switch (eventType) {
+            case "session.created":
+            case "session.ended":
+            case "session.removed":
+                return {
+                    details: {
+                        userId: payload.data.user_id,
+                        ...webhookDetails,
+                    },
+                }
+            case "user.created":
+            case "user.updated":
+            case "user.deleted":
+                return {
+                    details: {
+                        userId: payload.data.id,
+                        ...webhookDetails,
+                    },
+                }
+            default:
+                return {
+                    details: webhookDetails,
+                }
         }
     }
 
