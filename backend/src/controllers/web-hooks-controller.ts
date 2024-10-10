@@ -16,6 +16,8 @@ import {
 
 import { UserStatus } from "@/types/user-types"
 
+import { isWebhookHeaders } from "@/utils/webhook-utils"
+
 import type { Request, Response } from "express"
 import type { WebhookEvent } from "@clerk/clerk-sdk-node"
 
@@ -25,16 +27,17 @@ export async function clerkWebHooksHandler(
     req: ExtendedRequest,
     res: Response
 ) {
-    const headers = req.headers
     const payload = req.body
 
-    const svixId = headers["svix-id"] as string
-    const svixTimestamp = headers["svix-timestamp"] as string
-    const svixSignature = headers["svix-signature"] as string
-
-    if (!svixId || !svixTimestamp || !svixSignature) {
+    if (!isWebhookHeaders(req.headers)) {
         throw new BadRequestError("No svix headers")
     }
+
+    const {
+        "svix-id": svixId,
+        "svix-timestamp": svixTimestamp,
+        "svix-signature": svixSignature,
+    } = req.headers
 
     let evt: WebhookEvent
 

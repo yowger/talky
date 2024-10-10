@@ -6,7 +6,7 @@ import type { TransportTargetOptions } from "pino"
 
 const isDevelopment = config.nodeEnv === "development"
 
-const level = isDevelopment ? "debug" : "info"
+const level = isDevelopment ? "debug" : "warn"
 
 const devTransport: TransportTargetOptions = {
     level,
