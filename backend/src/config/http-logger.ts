@@ -1,6 +1,7 @@
 import httpPino from "pino-http"
 import pino from "pino"
 
+import { config } from "@/config/config"
 import logger from "@/config/logger"
 
 import { isWebhookHeaders } from "@/utils/webhook-utils"
@@ -15,16 +16,23 @@ const httpLogger = httpPino({
         res: pino.stdSerializers.res,
     },
     customLogLevel: function (req, res, err) {
-        if (res.statusCode >= 400 && res.statusCode < 500) {
+        const { statusCode } = res
+
+        if (statusCode >= 400 && statusCode < 500) {
             return "warn"
-        } else if (res.statusCode >= 500 || err) {
+        } else if (statusCode >= 500 || err) {
             return "error"
         }
 
         return "info"
     },
     customProps: function (req: Request, res: Response) {
-        if (isWebhookHeaders(req.headers) && res.statusCode >= 400) {
+        const statusCodeThreshold = config.nodeEnv === "development" ? 200 : 400
+
+        if (
+            isWebhookHeaders(req.headers) &&
+            res.statusCode >= statusCodeThreshold
+        ) {
             return getWebhookDetails(req)
         }
 
