@@ -7,7 +7,7 @@ import logger from "@/config/logger"
 import { isWebhookHeaders } from "@/utils/webhook-utils"
 
 import type { Request, Response } from "express"
-import type { WebhookEvent, SessionWebhookEvent } from "@clerk/clerk-sdk-node"
+import type { WebhookEvent } from "@clerk/clerk-sdk-node"
 
 const httpLogger = httpPino({
     logger,
@@ -28,7 +28,8 @@ const httpLogger = httpPino({
         return "info"
     },
     customProps: function (req: Request, res: Response) {
-        const statusCodeThreshold = config.nodeEnv === "development" ? 200 : 400
+        const isDevelopment = config.nodeEnv === "development"
+        const statusCodeThreshold = isDevelopment ? 200 : 400
 
         if (
             isWebhookHeaders(req.headers) &&
@@ -60,6 +61,7 @@ function getWebhookDetails(req: ExtendedRequest) {
                 timestamp: svixTimestamp,
             },
         }
+
         switch (eventType) {
             case "session.created":
             case "session.ended":

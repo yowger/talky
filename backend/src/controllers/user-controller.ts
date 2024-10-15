@@ -11,13 +11,12 @@ export async function getUsersByPaginationHandler(
 ) {
     const { username, page, pageSize } = req.query
 
-    const { users, pagination } = await findUsersWithPagination(
-        { username },
-        {
-            page,
-            pageSize,
-        }
-    )
+    const searchFilter = username ? { username } : {}
+
+    const { users, pagination } = await findUsersWithPagination(searchFilter, {
+        page,
+        pageSize,
+    })
 
     return res.status(200).json({
         users,
