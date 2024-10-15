@@ -15,11 +15,11 @@ import "@/index.css"
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
         <Suspense fallback={<LoadingPage />}>
-            <ErrorBoundary fallback={<ErrorFallback />}>
-                <QueryClientProvider client={queryClient}>
+            <QueryClientProvider client={queryClient}>
+                <ErrorBoundary fallback={<ErrorFallback />}>
                     <App />
-                </QueryClientProvider>
-            </ErrorBoundary>
+                </ErrorBoundary>
+            </QueryClientProvider>
         </Suspense>
     </StrictMode>
 )
