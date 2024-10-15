@@ -16,7 +16,7 @@ export default function PanelItemButton(props: PanelItemButtonProps) {
             variant="ghost"
             size="icon"
             className={cn(
-                "text-gray-500 flex-1 md:flex-none",
+                "text-gray-700 hover:bg-gray-300 flex-1 md:flex-none",
                 isActive && "bg-gray-200"
             )}
             onClick={onClick}

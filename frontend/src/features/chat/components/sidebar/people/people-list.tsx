@@ -18,7 +18,7 @@ export default function PeopleList({ people, onClick }: PeopleListProps) {
                 >
                     <AvatarWithStatus
                         name={person.username}
-                        src={person.profileImageUrl}
+                        src={person.imageUrl}
                         isOnline={true}
                     />
 

@@ -25,14 +25,14 @@ export default function ChatList(props: ChatListProps) {
                 return (
                     <div key={chat.id} className="flex items-start p-2">
                         <AvatarWithStatus
-                            src={chat.participants[0].avatar}
-                            name={chat.participants[0].name}
+                            src={chat.participants[0].imageUrl}
+                            name={chat.participants[0].username}
                         />
                         <div className="flex flex-col w-full ml-2">
                             <div className="flex items-center justify-between">
                                 <span className="text-sm font-semibold text-gray-900 dark:text-white">
                                     {chat.participants
-                                        .map((p) => p.name)
+                                        .map((p) => p.username)
                                         .join(", ")}
                                 </span>
 

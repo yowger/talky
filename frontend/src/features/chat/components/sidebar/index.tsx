@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import ChatListDisplay from "./chat"
 import NavPanel from "./nav-panel"
 
-import PanelItemButton from "./panel-item-button"
+import PanelItemButton from "./nav-panel/panel-item-button"
 
 import type { ReactNode } from "react"
 

@@ -9,6 +9,7 @@ import type { User } from "@/features/chat/types"
 
 export default function PeopleListDisplay() {
     const { data, status } = useGetUsers()
+    console.log("🚀 ~ PeopleListDisplay ~ data:", data)
 
     function handlePersonClick(person: User) {
         console.log("Person clicked:", person)
