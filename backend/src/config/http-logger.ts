@@ -12,7 +12,7 @@ import type { WebhookEvent } from "@clerk/clerk-sdk-node"
 const httpLogger = httpPino({
     logger,
     serializers: {
-        err: pino.stdSerializers.err,
+        // err: pino.stdSerializers.err,
         req: pino.stdSerializers.req,
         res: pino.stdSerializers.res,
     },

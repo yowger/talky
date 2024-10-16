@@ -34,8 +34,10 @@ export interface PaginatedUserResults {
     pagination: PaginationResults
 }
 
-export async function findUsersWithPagination(
-    filter: FilterQuery<UserDocument>,
+export type UserSearchFilter = FilterQuery<UserDocument>
+
+export async function findUsersByPagination(
+    searchTerm: string,
     options: PaginationOptions
 ): Promise<PaginatedUserResults> {
     const { page, pageSize } = options
@@ -43,13 +45,22 @@ export async function findUsersWithPagination(
     const limit = pageSize
     const offset = (page - 1) * pageSize
 
-    const users = await UserModel.find(filter)
+    const searchFilter: UserSearchFilter = searchTerm
+        ? {
+              $or: [
+                  { username: { $regex: new RegExp(`^${searchTerm}`, "i") } },
+                  //   { email: { $regex: new RegExp(`^${searchTerm}`, "i") } },
+              ],
+          }
+        : {}
+
+    const users = await UserModel.find(searchFilter)
         .limit(limit)
         .skip(offset)
         .lean()
         .exec()
 
-    const totalCount = await UserModel.countDocuments(filter).lean()
+    const totalCount = await UserModel.countDocuments(searchFilter).lean()
     const totalPages = Math.ceil(totalCount / limit)
 
     return {
@@ -61,6 +72,29 @@ export async function findUsersWithPagination(
             totalPages,
         },
     }
+}
+
+interface UserAutoCompleteOptions {
+    limit?: number
+}
+
+export async function findUsersByAutoComplete(
+    username: string,
+    options: UserAutoCompleteOptions = {}
+) {
+    const { limit = 10 } = options
+
+    const searchFilter: UserSearchFilter = username
+        ? { username: { $regex: new RegExp(`^${username}`, "i") } }
+        : {}
+
+    const users = await UserModel.find(searchFilter)
+        .limit(limit)
+        .select("clerkId username imageUrl status")
+        .lean()
+        .exec()
+
+    return users
 }
 
 export async function deleteUser(
