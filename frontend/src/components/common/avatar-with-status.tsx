@@ -4,16 +4,17 @@ interface AvatarWithStatusProps {
     name: string
     src?: string
     isOnline?: boolean
+    className?: string
 }
 
 export default function AvatarWithStatus(props: AvatarWithStatusProps) {
-    const { name, src, isOnline = false } = props
+    const { name, src, isOnline = false, className } = props
 
     const avatarFallback = name.slice(0, 2).toUpperCase()
 
     return (
         <div className="relative inline-block">
-            <Avatar>
+            <Avatar className={className}>
                 <AvatarImage src={src} />
                 <AvatarFallback>{avatarFallback}</AvatarFallback>
             </Avatar>
