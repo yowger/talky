@@ -1,7 +1,10 @@
+export type Status = "online" | "offline"
+
 export interface User {
     id: string
     username: string
     imageUrl: string
+    status: Status
 }
 
 export interface Message {

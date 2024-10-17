@@ -14,7 +14,7 @@ export default function useAxiosAuth() {
                 if (token) {
                     config.headers.Authorization = `Bearer ${token}`
                 } else {
-                    // redirect login
+                    //todo - redirect login
                     console.log("no token")
                 }
 

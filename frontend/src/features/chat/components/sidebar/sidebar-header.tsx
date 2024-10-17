@@ -13,7 +13,12 @@ export default function SidebarHeader(props: SidebarHeaderProps) {
     const { children, className } = props
 
     return (
-        <div className={cn("flex items-center h-14 px-3 border-b", className)}>
+        <div
+            className={cn(
+                "flex items-center h-[58px] px-3 border-b",
+                className
+            )}
+        >
             {children}
 
             <div className="block md:hidden">

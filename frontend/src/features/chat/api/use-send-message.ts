@@ -15,6 +15,7 @@ export function sendMessage(
 ) {
     return axiosClient.post("/chat/messages", payload)
 }
+
 export function useSendMessage() {
     const axiosAuth = useAxiosAuth()
 

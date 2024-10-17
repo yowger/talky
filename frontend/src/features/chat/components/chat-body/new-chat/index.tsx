@@ -1,29 +1,15 @@
 import ChatHeader from "../chat-header"
-import MultipleSelector from "@/components/ui/multi-select"
 
-import type { Option } from "@/components/ui/multi-select"
+import UserMultiSelector from "./components/user-multi-selector"
 
 export default function NewChat() {
-    const OPTIONS: Option[] = [
-        { label: "coolTiger", value: "coolTiger" },
-        { label: "fastFox", value: "fastFox" },
-        { label: "swiftEagle", value: "swiftEagle" },
-        { label: "silentWolf", value: "silentWolf" },
-        { label: "braveLion", value: "braveLion" },
-        { label: "cleverOtter", value: "cleverOtter" },
-        { label: "boldElephant", value: "boldElephant" },
-        { label: "gentlePanda", value: "gentlePanda" },
-        { label: "wiseOwl", value: "wiseOwl" },
-        { label: "nimbleCheetah", value: "nimbleCheetah" },
-        { label: "mightyBear", value: "mightyBear" },
-    ]
-
     return (
         <div className="flex flex-1 h-full flex-col justify-between overflow-y-auto">
             <ChatHeader>
                 <div className="flex flex-1 items-center">
                     <span className="mr-2">To:</span>
-                    <MultipleSelector defaultOptions={OPTIONS} />
+
+                    <UserMultiSelector />
                 </div>
             </ChatHeader>
 
@@ -35,3 +21,6 @@ export default function NewChat() {
         </div>
     )
 }
+
+// todo group by friends, user
+// todo display image on autocomplete

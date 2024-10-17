@@ -15,7 +15,7 @@ export default function ChatHeader(props: ChatHeader) {
     // }
 
     return (
-        <div className="min-h-14 sticky top-0 w-full border-b bg-white z-10">
+        <div className="min-h-[58px] sticky top-0 w-full border-b bg-white z-10">
             <div className="py-2 px-3 flex items-center gap-2 h-full">
                 <div className="md:hidden block ">
                     <Button
