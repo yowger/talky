@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import Select from "react-select"
 import debounce from "lodash.debounce"
 
@@ -9,12 +9,12 @@ import AvatarWithStatus from "@/components/common/avatar-with-status"
 import type { InputActionMeta } from "react-select"
 import type { User } from "@/features/chat/types"
 
-export interface UserOption {
-    key: string
-    value: string
-    label: string
-    imageUrl: string
-    status: string
+type PartialUser = Pick<User, "imageUrl" | "status">
+
+export interface UserOption extends PartialUser {
+    key: User["clerkId"]
+    value: User["clerkId"]
+    label: User["username"]
 }
 
 export default function UserMultiSelector() {
@@ -26,7 +26,6 @@ export default function UserMultiSelector() {
         isLoading,
         isError,
     } = useGetUsersByAutoComplete(searchText)
-    console.log("🚀 ~ UserMultiSelector ~ users:", users)
 
     const handleSearchDebounced = useRef(
         debounce((searchText) => setSearchText(searchText), 300)
@@ -47,15 +46,13 @@ export default function UserMultiSelector() {
         return "No matching users"
     }
 
-    const userOptions: UserOption[] | undefined = useMemo(() => {
-        return users?.map((user: User) => ({
-            key: user.id,
-            value: user.id,
-            label: user.username,
-            imageUrl: user.imageUrl,
-            status: user.status,
-        }))
-    }, [users])
+    const userOptions: UserOption[] | undefined = users?.map((user: User) => ({
+        key: user.id,
+        value: user.clerkId,
+        label: user.username,
+        imageUrl: user.imageUrl,
+        status: user.status,
+    }))
 
     if (isError) {
         return <p>Failed to load users</p>
