@@ -1,7 +1,5 @@
 import { useState } from "react"
 
-import useChatStore from "@/features/chat/stores/slices"
-
 import ChatHeader from "../chat-header"
 import MessageInput from "../messages/message-input"
 import UserMultiSelector from "./components/user-multi-selector"
@@ -10,26 +8,15 @@ import type { UserOption } from "./components/user-multi-selector"
 
 export default function NewChat() {
     const [inputValue, setInputValue] = useState("")
-
-    const addUser = useChatStore((state) => state.addUser)
-    const clearSelectedUsers = useChatStore((state) => state.clearSelectedUsers)
+    const [selectedUserIds, setSelectedUserIds] = useState<string[]>([])
 
     function handleOnChange(usersOption: UserOption[]) {
-        clearSelectedUsers()
-
-        usersOption.forEach((userOption) => {
-            addUser({
-                id: userOption.value,
-                clerkId: userOption.value,
-                username: userOption.label,
-                imageUrl: userOption.imageUrl,
-                status: userOption.status,
-            })
-        })
+        const userIds = usersOption.map((userOption) => userOption.value)
+        setSelectedUserIds(userIds)
     }
 
     function handleNewChat() {
-        console.log("new chat created...")
+        console.log("new chat created...", selectedUserIds)
     }
 
     return (
@@ -49,8 +36,9 @@ export default function NewChat() {
             </div>
 
             <MessageInput
-                onSendClick={handleNewChat}
                 value={inputValue}
+                isDisabled={selectedUserIds.length === 0}
+                onSendClick={handleNewChat}
                 onChange={setInputValue}
             />
         </div>
