@@ -1,9 +1,14 @@
 import { create } from "zustand"
 
-import { ChatStateSlice, createChatSlice } from "./state-slice"
+import { createChatSlice } from "./state-slice"
+import { createSelectedUsersSlice } from "./selected-users"
 
-const useChatStore = create<ChatStateSlice>()((...a) => ({
+import type { ChatStateSlice } from "./state-slice"
+import type { SelectedUsersSlice } from "./selected-users"
+
+const useChatStore = create<ChatStateSlice & SelectedUsersSlice>()((...a) => ({
     ...createChatSlice(...a),
+    ...createSelectedUsersSlice(...a),
 }))
 
 export default useChatStore

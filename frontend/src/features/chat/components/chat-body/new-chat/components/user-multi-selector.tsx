@@ -6,7 +6,7 @@ import { useGetUsersByAutoComplete } from "@/features/chat/api/use-get-users-aut
 
 import AvatarWithStatus from "@/components/common/avatar-with-status"
 
-import type { InputActionMeta } from "react-select"
+import type { InputActionMeta, MultiValue } from "react-select"
 import type { User } from "@/features/chat/types"
 
 type PartialUser = Pick<User, "imageUrl" | "status">
@@ -17,7 +17,13 @@ export interface UserOption extends PartialUser {
     label: User["username"]
 }
 
-export default function UserMultiSelector() {
+interface UserMultiSelectorProps {
+    onChange?: (selectedUsers: UserOption[]) => void
+}
+
+export default function UserMultiSelector(props: UserMultiSelectorProps) {
+    const { onChange } = props
+
     const [inputText, setInputText] = useState<string>("")
     const [searchText, setSearchText] = useState<string>("")
 
@@ -46,13 +52,23 @@ export default function UserMultiSelector() {
         return "No matching users"
     }
 
-    const userOptions: UserOption[] | undefined = users?.map((user: User) => ({
-        key: user.id,
-        value: user.clerkId,
-        label: user.username,
-        imageUrl: user.imageUrl,
-        status: user.status,
-    }))
+    function formatUsers(users: User[]): UserOption[] {
+        return users.map((user: User) => ({
+            key: user.clerkId,
+            value: user.clerkId,
+            label: user.username,
+            imageUrl: user.imageUrl,
+            status: user.status,
+        }))
+    }
+
+    const userOptions: UserOption[] | undefined = users
+        ? formatUsers(users)
+        : []
+
+    function handleChange(selected: MultiValue<UserOption>) {
+        if (onChange) onChange(selected as UserOption[])
+    }
 
     if (isError) {
         return <p>Failed to load users</p>
@@ -67,6 +83,7 @@ export default function UserMultiSelector() {
             isClearable={true}
             isMulti={true}
             onInputChange={handleInputChange}
+            onChange={handleChange}
             formatOptionLabel={formatOptionLabel}
             noOptionsMessage={noOptionsMessage}
             className="w-full text-sm"
@@ -78,7 +95,6 @@ export default function UserMultiSelector() {
 type UsersOptions = UserOption
 
 function formatOptionLabel(option: UsersOptions) {
-    console.log("rendering label")
     return (
         <div className="flex overflow-hidden items-center rounded">
             <AvatarWithStatus
@@ -93,3 +109,5 @@ function formatOptionLabel(option: UsersOptions) {
         </div>
     )
 }
+
+// todo - redo design
