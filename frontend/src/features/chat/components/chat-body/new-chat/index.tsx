@@ -4,11 +4,15 @@ import ChatHeader from "../chat-header"
 import MessageInput from "../messages/message-input"
 import UserMultiSelector from "./components/user-multi-selector"
 
+import { useFindOrCreateChat } from "@/features/chat/api/use-create-chat"
+
 import type { UserOption } from "./components/user-multi-selector"
 
 export default function NewChat() {
     const [inputValue, setInputValue] = useState("")
     const [selectedUserIds, setSelectedUserIds] = useState<string[]>([])
+
+    const { mutate } = useFindOrCreateChat()
 
     function handleOnChange(usersOption: UserOption[]) {
         const userIds = usersOption.map((userOption) => userOption.value)
@@ -17,6 +21,18 @@ export default function NewChat() {
 
     function handleNewChat() {
         console.log("new chat created...", selectedUserIds)
+
+        mutate(
+            { participants: selectedUserIds, initialMessage: inputValue },
+            {
+                onError: (error) => {
+                    console.log("🚀 ~ handleNewChat ~ error:", error)
+                },
+                onSuccess: (test) => {
+                    console.log("🚀 ~ handleNewChat ~ test:", test)
+                },
+            }
+        )
     }
 
     return (

@@ -13,7 +13,7 @@ export function sendMessage(
     axiosClient: AxiosInstance,
     payload: MessagePayload
 ) {
-    return axiosClient.post("/chat/messages", payload)
+    return axiosClient.post("/message", payload)
 }
 
 export function useSendMessage() {

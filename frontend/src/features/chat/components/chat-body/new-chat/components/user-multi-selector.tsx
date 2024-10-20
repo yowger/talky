@@ -54,7 +54,7 @@ export default function UserMultiSelector(props: UserMultiSelectorProps) {
 
     function formatUsers(users: User[]): UserOption[] {
         return users.map((user: User) => ({
-            key: user.clerkId,
+            key: user.id,
             value: user.clerkId,
             label: user.username,
             imageUrl: user.imageUrl,
