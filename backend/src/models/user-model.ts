@@ -1,13 +1,13 @@
 import { model, Schema } from "mongoose"
 
-import { UserStatus } from "@/types/user-types"
+import type { HydratedDocumentFromSchema, InferSchemaType } from "mongoose"
 
-import type { Document } from "mongoose"
-import type { User } from "@/types/user-types"
+export enum UserStatus {
+    ONLINE = "online",
+    OFFLINE = "offline",
+}
 
-export type UserDocument = User & Document
-
-const UserSchema = new Schema<UserDocument>(
+const UserSchema = new Schema(
     {
         clerkId: {
             type: String,
@@ -33,4 +33,6 @@ const UserSchema = new Schema<UserDocument>(
     }
 )
 
-export const UserModel = model<UserDocument>("User", UserSchema)
+export const UserModel = model("User", UserSchema)
+export type HydratedUserModel = HydratedDocumentFromSchema<typeof UserSchema>
+export type UserModelType = InferSchemaType<typeof UserSchema>

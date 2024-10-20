@@ -18,6 +18,7 @@ export default function globalErrorHandler(
         statusCode: error instanceof ApiError ? error.httpStatusCode : 500,
         error: {
             message: error.message,
+            details: error instanceof ApiError ? error.details : {},
         },
         details: {},
     }

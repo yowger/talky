@@ -2,6 +2,7 @@ import { Router } from "express"
 
 import chatRoute from "@/routes/v1/chat-route"
 import userRoute from "@/routes/v1/users-route"
+import messageRoute from "@/routes/v1/message-route"
 import webhookRoute from "@/routes/v1/webhooks-route"
 
 const router = Router()
@@ -19,6 +20,10 @@ const defaultRoutes: Routes[] = [
     {
         path: "/chat",
         route: chatRoute,
+    },
+    {
+        path: "/message",
+        route: messageRoute,
     },
     {
         path: "/user",

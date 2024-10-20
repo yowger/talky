@@ -1,3 +1,36 @@
+import { model, Schema } from "mongoose"
+
+import type { HydratedDocumentFromSchema, InferSchemaType } from "mongoose"
+
+const ChatSchema = new Schema(
+    {
+        name: {
+            type: String,
+        },
+        participants: [
+            {
+                type: String,
+                required: true,
+                ref: "User",
+            },
+        ],
+        createdBy: {
+            type: String,
+        },
+        lastMessage: {
+            type: Schema.Types.ObjectId,
+            ref: "Message",
+        },
+    },
+    {
+        timestamps: true,
+    }
+)
+
+export const ChatModel = model("Chat", ChatSchema)
+export type HydratedChatModel = HydratedDocumentFromSchema<typeof ChatSchema>
+export type ChatModelType = InferSchemaType<typeof ChatSchema>
+
 /*
     CHAT - 
     id 
@@ -21,22 +54,3 @@
 
     senderId: string
 */
-
-import { Chat } from "@/types/chat-types"
-import { Document, Schema } from "mongoose"
-
-type ChatDocument = Chat & Document
-
-const ChatSchema = new Schema<ChatDocument>(
-    {
-        name: {
-            type: String,
-        },
-        participants: [{
-            type: Schema.Types.ObjectId,
-        }],
-    },
-    {
-        timestamps: true,
-    }
-)

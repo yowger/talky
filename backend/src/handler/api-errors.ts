@@ -125,6 +125,7 @@ export class InternalServerError extends ApiError {
             httpStatusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR,
             description,
             details,
+            isOperational: false,
         })
     }
 }

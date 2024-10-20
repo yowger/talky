@@ -6,38 +6,40 @@ import type {
     PaginationOptions,
     PaginationResults,
 } from "@/types/pagination-types"
-import type { UserDocument } from "@/models/user-model"
-import type { User } from "@/types/user-types"
+import type { HydratedUserModel, UserModelType } from "@/models/user-model"
 
-type CreateUser = Optional<User, "status">
+type CreateUser = Optional<
+    Omit<UserModelType, "createdAt" | "updatedAt">,
+    "status"
+>
 
-export async function createUser(userData: CreateUser): Promise<UserDocument> {
-    const user = new UserModel(userData)
-
-    return await user.save()
+export async function createUser(
+    userData: CreateUser
+): Promise<HydratedUserModel> {
+    return new UserModel(userData).save()
 }
 
 export async function findUserByClerkId(
     clerkId: string
-): Promise<UserDocument | null> {
-    return await UserModel.findOne({ clerkId }).lean()
+): Promise<UserModelType | null> {
+    return UserModel.findOne({ clerkId }).lean().exec()
 }
 
 export async function findUsers(
-    filter: FilterQuery<User>
-): Promise<UserDocument[]> {
-    return await UserModel.find(filter).lean()
+    filter: FilterQuery<UserModelType>
+): Promise<UserModelType[]> {
+    return UserModel.find(filter).lean().exec()
 }
 
 export interface PaginatedUserResults {
-    users: UserDocument[]
+    users: UserModelType[]
     pagination: PaginationResults
 }
 
-export type UserSearchFilter = FilterQuery<UserDocument>
+export type UserSearchFilter = FilterQuery<HydratedUserModel>
 
 export async function findUsersByPagination(
-    searchTerm: string,
+    username: string,
     options: PaginationOptions
 ): Promise<PaginatedUserResults> {
     const { page, pageSize } = options
@@ -45,13 +47,8 @@ export async function findUsersByPagination(
     const limit = pageSize
     const offset = (page - 1) * pageSize
 
-    const searchFilter: UserSearchFilter = searchTerm
-        ? {
-              $or: [
-                  { username: { $regex: new RegExp(`^${searchTerm}`, "i") } },
-                  //   { email: { $regex: new RegExp(`^${searchTerm}`, "i") } },
-              ],
-          }
+    const searchFilter: UserSearchFilter = username
+        ? { username: { $regex: new RegExp(`^${username}`, "i") } }
         : {}
 
     const users = await UserModel.find(searchFilter)
@@ -60,7 +57,7 @@ export async function findUsersByPagination(
         .lean()
         .exec()
 
-    const totalCount = await UserModel.countDocuments(searchFilter).lean()
+    const totalCount = await UserModel.countDocuments(searchFilter)
     const totalPages = Math.ceil(totalCount / limit)
 
     return {
@@ -78,47 +75,50 @@ interface UserAutoCompleteOptions {
     limit?: number
 }
 
+type findUsersByAutocompleteResponse = Pick<
+    UserModelType,
+    "clerkId" | "username" | "imageUrl" | "status"
+>
+
 export async function findUsersByAutoComplete(
     username: string,
     options: UserAutoCompleteOptions = {}
-) {
+): Promise<findUsersByAutocompleteResponse[]> {
     const { limit = 10 } = options
 
     const searchFilter: UserSearchFilter = username
         ? { username: { $regex: new RegExp(`^${username}`, "i") } }
         : {}
 
-    const users = await UserModel.find(searchFilter)
+    return await UserModel.find(searchFilter)
         .limit(limit)
-        .select("clerkId username imageUrl status")
+        .select("id clerkId username imageUrl status")
         .lean()
         .exec()
-
-    return users
 }
 
 export async function deleteUser(
     clerkId: string
-): Promise<UserDocument | null> {
-    return await UserModel.findOneAndDelete({ clerkId })
+): Promise<HydratedUserModel | null> {
+    return UserModel.findOneAndDelete({ clerkId }).exec()
 }
 
 export async function updateUser(
     clerkId: string,
-    updateData: UpdateQuery<Partial<User>>
-): Promise<UserDocument | null> {
-    return await UserModel.findOneAndUpdate({ clerkId }, updateData, {
+    updateData: UpdateQuery<Partial<UserModelType>>
+): Promise<HydratedUserModel | null> {
+    return UserModel.findOneAndUpdate({ clerkId }, updateData, {
         new: true,
-    })
+    }).exec()
 }
 
 export async function updateUserStatus(
     clerkId: string,
-    status: User["status"]
-): Promise<UserDocument | null> {
-    return await UserModel.findOneAndUpdate(
+    status: UserModelType["status"]
+): Promise<HydratedUserModel | null> {
+    return UserModel.findOneAndUpdate(
         { clerkId },
         { status },
         { new: true }
-    )
+    ).exec()
 }

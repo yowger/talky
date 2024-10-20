@@ -14,7 +14,7 @@ import {
     updateUserStatus,
 } from "@/service/user-service"
 
-import { UserStatus } from "@/types/user-types"
+import { UserStatus } from "@/models/user-model"
 
 import { isWebhookHeaders } from "@/utils/webhook-utils"
 
