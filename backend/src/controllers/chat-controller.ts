@@ -20,7 +20,7 @@ import type { Request, Response } from "express"
 
 type ExtendedRequireAuhProp = RequireAuthProp<Request<{}, {}, CreateChat, {}>>
 
-export async function createOrFindChatHandler(
+export async function findOrCreateChatHandler(
     req: ExtendedRequireAuhProp,
     res: Response
 ) {
