@@ -1,27 +1,25 @@
-import { createId } from "@paralleldrive/cuid2"
 import { startSession } from "mongoose"
 
-import {
-    BadRequestError,
-    InternalServerError,
-    NotFoundError,
-} from "@/handler/api-errors"
-
-import { broadcastMessage } from "@/events/chat-events"
+import { BadRequestError, InternalServerError } from "@/handler/api-errors"
 
 import { createInitialMessage } from "@/service/message-service"
-import { getClerkUser } from "@/service/clerk-service"
-import { findOrCreateChat, validateParticipants } from "@/service/chat-service"
+import {
+    findOrCreateChatInstance,
+    getChatsByCursor,
+    populateChatDetails,
+    validateParticipants,
+} from "@/service/chat-service"
 
-import type { CreateChat } from "@/validation/chat/create-chat-schema"
-import type { MessagePayload } from "@/events/chat-events"
+import type { CreateChat, GetChats } from "@/validation/chat/create-chat-schema"
 import type { RequireAuthProp } from "@clerk/clerk-sdk-node"
 import type { Request, Response } from "express"
 
-type ExtendedRequireAuhProp = RequireAuthProp<Request<{}, {}, CreateChat, {}>>
+type ExtendedFindOrCreateChatsRequest = RequireAuthProp<
+    Request<{}, {}, CreateChat, {}>
+>
 
 export async function findOrCreateChatHandler(
-    req: ExtendedRequireAuhProp,
+    req: ExtendedFindOrCreateChatsRequest,
     res: Response
 ) {
     const { auth } = req
@@ -40,27 +38,26 @@ export async function findOrCreateChatHandler(
             throw new BadRequestError("Some participants do not exist.")
         }
 
-        const chatInstance = await findOrCreateChat(participants)
+        const chatInstance = await findOrCreateChatInstance(participants)
 
-        if (chatInstance.isNew) {
-            await chatInstance.save({ session })
+        if (initialMessage) {
+            const messageInstance = await createInitialMessage({
+                chatId: chatInstance._id,
+                content: initialMessage,
+                sender: auth.userId,
+            })
+            await messageInstance.save({ session })
 
-            if (initialMessage) {
-                const messageInstance = await createInitialMessage({
-                    chatId: chatInstance._id,
-                    content: initialMessage,
-                    sender: auth.userId,
-                })
-                await messageInstance.save({ session })
-
-                chatInstance.lastMessage = messageInstance._id
-                await chatInstance.save({ session })
-            }
+            chatInstance.lastMessage = messageInstance._id
         }
+
+        await chatInstance.save({ session })
+
+        await chatInstance.populate(populateChatDetails())
 
         await session.commitTransaction()
 
-        return res.status(201).json(chatInstance)
+        res.status(201).json(chatInstance)
     } catch (error) {
         await session.abortTransaction()
 
@@ -74,29 +71,16 @@ export async function findOrCreateChatHandler(
     }
 }
 
-export async function sendMessageHandler(
-    req: RequireAuthProp<Request>,
+type ExtendedGetChatsRequest = RequireAuthProp<Request<{}, {}, {}, GetChats>>
+
+export async function getChatsWithCursorHandler(
+    req: ExtendedGetChatsRequest,
     res: Response
 ) {
     const { auth } = req
-    const { content, timestamp } = req.body
+    const { cursor } = req.query
 
-    const user = await getClerkUser(auth.userId)
+    const chats = await getChatsByCursor(auth.userId, { lastId: cursor })
 
-    if (!user) {
-        throw new NotFoundError("User not found")
-    }
-
-    const { id, username, imageUrl } = user
-
-    const message: MessagePayload = {
-        id: createId(),
-        sender: { id, username, imageUrl },
-        content,
-        timestamp,
-    }
-
-    broadcastMessage(message)
-
-    return res.status(200).send({})
+    res.status(201).json(chats)
 }

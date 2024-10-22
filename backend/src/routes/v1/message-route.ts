@@ -7,7 +7,7 @@ import { usersQuerySchema } from "@/validation/user/user-schema"
 import asyncHandler from "@/middlewares/async-handler"
 import validateRequest from "@/middlewares/validate-request-handler"
 
-import { sendMessageHandler } from "@/controllers/chat-controller"
+import { sendMessageHandler } from "@/controllers/message-controller"
 
 const router = Router()
 
