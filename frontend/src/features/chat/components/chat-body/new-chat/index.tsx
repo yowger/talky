@@ -28,8 +28,8 @@ export default function NewChat() {
                 onError: (error) => {
                     console.log("🚀 ~ handleNewChat ~ error:", error)
                 },
-                onSuccess: (test) => {
-                    console.log("🚀 ~ handleNewChat ~ test:", test)
+                onSuccess: (chat) => {
+                    console.log("🚀 ~ handleNewChat ~ test:", chat)
                 },
             }
         )

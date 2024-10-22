@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils"
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface AvatarWithStatusProps {
@@ -14,7 +16,7 @@ export default function AvatarWithStatus(props: AvatarWithStatusProps) {
 
     return (
         <div className="relative inline-block">
-            <Avatar className={className}>
+            <Avatar className={cn("border border-gray-300", className)}>
                 <AvatarImage src={src} />
                 <AvatarFallback>{avatarFallback}</AvatarFallback>
             </Avatar>
