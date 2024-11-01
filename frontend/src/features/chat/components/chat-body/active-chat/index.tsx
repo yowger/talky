@@ -2,24 +2,34 @@ import { useState } from "react"
 import { useUser } from "@clerk/clerk-react"
 
 import usePusherNewMessage from "@/features/chat/hooks/use-pusher-new-message"
+import useChatStore from "@/features/chat/stores/slices"
 import { useSendMessage } from "@/features/chat/api/use-send-message"
 
+import { formatNames } from "@/features/chat/utils"
+
 import ChatHeader from "../chat-header"
-import Empty from "../empty"
 import MessageInput from "../messages/message-input"
 import MessageList from "../messages/message-list"
+import ParticipantsAvatars from "../participants-avatars"
 
 import type { Message } from "@/features/chat/types"
 
 export default function ActiveChat() {
     const { user, isLoaded } = useUser()
+    const { participants } = useChatStore()
     const { mutate } = useSendMessage()
 
+    const [newMessage, setNewMessage] = useState("")
     const [messages, setMessages] = useState<Message[]>([])
 
-    function handleSendMessage(content: string) {
+    const participantNames = participants.map(
+        (participant) => participant.username
+    )
+    const chatName = formatNames(participantNames, 2)
+
+    function handleSendMessage() {
         mutate({
-            content,
+            content: newMessage,
             timestamp: new Date(),
         })
     }
@@ -35,15 +45,26 @@ export default function ActiveChat() {
         return "loading"
     }
 
-    if (messages.length === 0) {
-        return <Empty />
-    }
+    // if (messages.length === 0) {
+    //     return <p>no messages</p>
+    // }
 
     return (
         <div className="flex flex-1 h-full flex-col justify-between overflow-y-auto">
-            <ChatHeader />
+            <ChatHeader>
+                <ParticipantsAvatars
+                    participants={participants}
+                    maxDisplay={2}
+                    size={"medium"}
+                />
+                <h3 className="font-medium">{chatName}</h3>
+            </ChatHeader>
             <MessageList messages={messages} currentUserId={user?.id || ""} />
-            <MessageInput onSendClick={handleSendMessage} />
+            <MessageInput
+                value={newMessage}
+                onSendClick={handleSendMessage}
+                onChange={setNewMessage}
+            />
         </div>
     )
 }

@@ -1,13 +1,19 @@
 import useChatStore from "../../stores/slices"
-import NewChat from "./new-chat"
+
 import ActiveChat from "./active-chat"
+import Empty from "./empty"
+import NewChat from "./new-chat"
 
 export default function ChatMain() {
-    const { isNewChat } = useChatStore()
+    const { isNewChat, activeChatId } = useChatStore()
 
     if (isNewChat) {
         return <NewChat />
     }
 
-    return <ActiveChat />
+    if (activeChatId) {
+        return <ActiveChat />
+    }
+
+    return <Empty />
 }
